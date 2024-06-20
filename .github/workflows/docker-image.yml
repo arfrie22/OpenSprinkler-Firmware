@@ -62,11 +62,13 @@ jobs:
       - id: lower-repo
         name: Repository to lowercase
         run: |
+          echo "repository=${GITHUB_REPOSITORY@L}"
           echo "repository=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
 
       - id: lower-owner
         name: Owner to lowercase
         run: |
+          echo "owner=${GITHUB_REPOSITORY_OWNER@L}"
           echo "owner=${GITHUB_REPOSITORY_OWNER@L}" >> $GITHUB_OUTPUT
 
       - name: Login to GitHub Container Registry
@@ -85,7 +87,7 @@ jobs:
             # Essentially just ignore the cache output (PR can't write to registry cache)
             echo "cache-to=type=local,dest=/tmp/discard,ignore-error=true" >> $GITHUB_OUTPUT
           else
-            echo "cache-to=type=registry,mode=max,ref=ghcr.io/arfrie22/firmware-build-cache:ospi" >> $GITHUB_OUTPUT
+            echo "cache-to=type=registry,mode=max,ref=ghcr.io/${{ steps.lower-owner.outputs.owner }}/opensprinkler-build-cache:ospi" >> $GITHUB_OUTPUT
           fi
 
       - name: Build and push image
@@ -97,7 +99,7 @@ jobs:
           # Skip pushing when PR from a fork
           push: false
           outputs: type=oci,dest=./output.tar
-          cache-from: type=registry,ref=ghcr.io/arfrie22/firmware-build-cache:ospi
+          cache-from: type=registry,ref=ghcr.io/${{ steps.lower-owner.outputs.owner }}/opensprinkler-build-cache:ospi
           cache-to: ${{ steps.cache-target.outputs.cache-to }}
 
       - name: Upload image
