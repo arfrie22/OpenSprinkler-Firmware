@@ -86,7 +86,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           # Skip pushing when PR from a fork
           push: false
-          outputs: type=docker,dest=./output.tar
+          outputs: type=oci,dest=./output.tar
           cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/firmware-build-cache:${{ github.repository }}
           cache-to: ${{ steps.cache-target.outputs.cache-to }}
 
