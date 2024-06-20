@@ -63,13 +63,11 @@ jobs:
         name: Repository to lowercase
         run: |
           REPO=${{ github.event.repository.name }}
-          echo "repository=${REPO@L}"
           echo "repository=${REPO@L}" >> $GITHUB_OUTPUT
 
       - id: lower-owner
         name: Owner to lowercase
         run: |
-          echo "owner=${GITHUB_REPOSITORY_OWNER@L}"
           echo "owner=${GITHUB_REPOSITORY_OWNER@L}" >> $GITHUB_OUTPUT
 
       - name: Login to GitHub Container Registry
@@ -135,11 +133,13 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             name: docker-image
+            path: ./docker-image
 
         - id: lower-repo
           name: Repository to lowercase
           run: |
-            echo "repository=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
+            REPO=${{ github.event.repository.name }}
+            echo "repository=${REPO@L}" >> $GITHUB_OUTPUT
 
         - id: lower-owner
           name: Owner to lowercase
