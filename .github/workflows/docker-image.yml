@@ -97,8 +97,8 @@ jobs:
           # Skip pushing when PR from a fork
           push: false
           outputs: type=oci,dest=./output.tar
-          cache-from: type=registry,ref=ghcr.io/${{ steps.lower-owner.outputs.owner }}/firmware-build-cache:${{ steps.lower-repo.outputs.repository }}
-          cache-to: ${{ steps.cache-target.outputs.cache-to }}
+          #cache-from: type=registry,ref=ghcr.io/${{ steps.lower-owner.outputs.owner }}/firmware-build-cache:${{ steps.lower-repo.outputs.repository }}
+          #cache-to: ${{ steps.cache-target.outputs.cache-to }}
 
       - name: Upload image
         uses: actions/upload-artifact@v4
