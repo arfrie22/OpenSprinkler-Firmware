@@ -134,15 +134,15 @@ jobs:
             name: docker-image
 
 
-      - id: lower-repo
-        name: Repository to lowercase
-        run: |
-          echo "repository=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
+        - id: lower-repo
+          name: Repository to lowercase
+          run: |
+            echo "repository=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
 
-      - id: lower-owner
-        name: Owner to lowercase
-        run: |
-          echo "owner=${GITHUB_REPOSITORY_OWNER@L}" >> $GITHUB_OUTPUT
+        - id: lower-owner
+          name: Owner to lowercase
+          run: |
+            echo "owner=${GITHUB_REPOSITORY_OWNER@L}" >> $GITHUB_OUTPUT
 
         - name: Login to GitHub Container Registry
           uses: docker/login-action@v3
