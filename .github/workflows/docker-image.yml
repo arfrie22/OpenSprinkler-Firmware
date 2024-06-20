@@ -85,7 +85,7 @@ jobs:
             # Essentially just ignore the cache output (PR can't write to registry cache)
             echo "cache-to=type=local,dest=/tmp/discard,ignore-error=true" >> $GITHUB_OUTPUT
           else
-            echo "cache-to=type=registry,mode=max,ref=ghcr.io/${{ steps.lower-owner.outputs.owner }}/firmware-build-cache:${{ steps.lower-repo.outputs.repository }}" >> $GITHUB_OUTPUT
+            echo "cache-to=type=registry,mode=max,ref=ghcr.io/arfrie22/firmware-build-cache:ospi" >> $GITHUB_OUTPUT
           fi
 
       - name: Build and push image
@@ -97,8 +97,8 @@ jobs:
           # Skip pushing when PR from a fork
           push: false
           outputs: type=oci,dest=./output.tar
-          #cache-from: type=registry,ref=ghcr.io/${{ steps.lower-owner.outputs.owner }}/firmware-build-cache:${{ steps.lower-repo.outputs.repository }}
-          #cache-to: ${{ steps.cache-target.outputs.cache-to }}
+          cache-from: type=registry,ref=ghcr.io/arfrie22/firmware-build-cache:ospi
+          cache-to: ${{ steps.cache-target.outputs.cache-to }}
 
       - name: Upload image
         uses: actions/upload-artifact@v4
@@ -132,7 +132,6 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             name: docker-image
-
 
         - id: lower-repo
           name: Repository to lowercase
