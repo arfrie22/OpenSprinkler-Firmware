@@ -155,6 +155,10 @@ jobs:
           name: docker-image
           path: ./docker-image
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        driver: docker
+
       - id: lower-repo
         name: Repository to lowercase
         run: |
@@ -196,4 +200,11 @@ jobs:
         run: docker import ./docker-image/output.tar
 
       - name: Push image
-        run: docker push ${{ steps.metadata.outputs.tags }}
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          # Skip pushing when PR from a fork
+          push: true
+          cache-from: type=registry,ref=ghcr.io/${{ steps.lower-owner.outputs.owner }}/opensprinkler-build-cache:ospi
+          tags: ${{ steps.metadata.outputs.tags }}
+          lables: ${{ steps.metadata.outputs.labels }}
