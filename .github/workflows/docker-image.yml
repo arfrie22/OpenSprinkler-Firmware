@@ -175,9 +175,6 @@ jobs:
 
         - name: Import image
           run: docker import ./docker-image/output.tar
-
-        - name: Tag image
-          run: docker tag ${{ steps.metadata.outputs.tags }} ${{ steps.metadata.outputs.tags }}
-
+          
         - name: Push image
           run: docker push ${{ steps.metadata.outputs.tags }}
