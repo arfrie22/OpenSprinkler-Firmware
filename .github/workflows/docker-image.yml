@@ -89,6 +89,24 @@ jobs:
             echo "cache-to=type=registry,mode=max,ref=ghcr.io/${{ steps.lower-owner.outputs.owner }}/opensprinkler-build-cache:ospi" >> $GITHUB_OUTPUT
           fi
 
+
+      - name: Generate docker image tags
+          id: metadata
+          uses: docker/metadata-action@v5
+          with:
+            flavor: |
+              latest=auto
+            images: |
+              name=ghcr.io/${{ steps.lower-owner.outputs.owner }}/${{ steps.lower-repo.outputs.repository }}
+            tags: |
+              # Tag with branch name
+              type=ref,event=branch
+              # Tag with pr-number
+              type=ref,event=pr
+              # Tag with git tag on release
+              type=ref,event=tag
+              type=raw,value=release,enable=${{ github.event_name == 'release' }}
+
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
@@ -100,6 +118,8 @@ jobs:
           outputs: type=oci,dest=./output.tar
           cache-from: type=registry,ref=ghcr.io/${{ steps.lower-owner.outputs.owner }}/opensprinkler-build-cache:ospi
           cache-to: ${{ steps.cache-target.outputs.cache-to }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          lables: ${{ steps.metadata.outputs.labels }}
 
       - name: Upload image
         uses: actions/upload-artifact@v4
@@ -175,6 +195,6 @@ jobs:
 
         - name: Import image
           run: docker import ./docker-image/output.tar
-          
+
         - name: Push image
           run: docker push ${{ steps.metadata.outputs.tags }}
